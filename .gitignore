@@ -1,0 +1,8 @@
+dist/
+.vscode
+build/
+*.spec
+*test*
+*__pycache__*
+*.bat
+*Pipfile*
