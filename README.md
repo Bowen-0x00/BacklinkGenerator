@@ -12,7 +12,7 @@ Supported software includes PotPlayer, Bookxnote, Zotero, and PowerPoint.
 
 [![摘录视频、PDF、PPT到Obsidian和Excalidraw的配置教程 -- 一键摘录内容，点击回链跳回原文](https://i1.hdslb.com/bfs/archive/ffd87eb63fd6655d5359b29ead642d19343b6585.jpg)](https://www.bilibili.com/video/BV1qH4y1j7Q6/)
 
-和
+And
 
 1. Download [Example vault](https://github.com/Bowen-0x00/obsidian-excalidraw-example-vault)
 2. Open it by obsidian
