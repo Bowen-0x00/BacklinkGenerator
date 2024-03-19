@@ -10,7 +10,7 @@ from utils.message import message
 
 def get_bookxnote_backlink(config):
     link: str = get_text_from_clipboard(press_hotkey_in_app, config, 'Bookxnote', 'hotkey-link')
-    page = get_regex_group('.*page=(\d)+.*', link)
+    page = get_regex_group('.*page=(\d+).*', link)
     link = f'[page: {page}]({link})'
     text = get_text_from_clipboard(press_hotkey_in_app, config, 'Bookxnote', 'hotkey-content')
     if text:

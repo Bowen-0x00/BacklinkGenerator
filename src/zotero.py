@@ -13,7 +13,7 @@ def get_zotero_backlink(config):
     content = get_text_from_clipboard(press_hotkey_in_app, config, 'Zotero', 'hotkey-copy')
     match = regex.search('.*\(\[pdf\]\((.*?)\).*', content)
     link = match.group(1)
-    page = get_regex_group('.*page=(\d)+.*', link)
+    page = get_regex_group('.*page=(\d+).*', link)
     link = f'[page: {page}]({link})'
     if not content.startswith('[image]'):
         text = get_regex_group('(.*?”) \(\[.*?\]\(zotero://select/library/items/.*?\)\)', content)
