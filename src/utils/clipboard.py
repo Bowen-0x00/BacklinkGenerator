@@ -27,7 +27,7 @@ def wait_for(paste):
             data = paste()
             if data != None and data != 'set temp':
                 return data
-            time.sleep(0.05)
+            time.sleep(0.02)
             if time.time() > startTime + TIMEOUT:
                 raise TimeoutException('waitForPaste() timed out after ' + str(TIMEOUT) + ' seconds.')
     return wrapper
