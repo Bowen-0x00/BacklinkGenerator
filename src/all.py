@@ -9,7 +9,7 @@ from bookxnote_local_file import get_bookxnote_backlink_local_file
 from zotero import get_zotero_backlink
 from zotero_local_file import get_zotero_backlink_local_file
 from PPT import get_PPT_backlink
-from utils.message import message
+from utils.message import notify
 
 app_to_func = {
     'potplayer-paste': get_potplayer_backlink,
@@ -45,5 +45,5 @@ if __name__ == "__main__":
         get_func(app, method)(config)
     except Exception as e:
         print(e)
-        message(e)
+        notify(e)
         

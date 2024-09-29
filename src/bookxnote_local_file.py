@@ -4,7 +4,7 @@ import json
 from utils.hotkey import press_hotkey_in_app
 from utils.regex import get_regex_group
 from utils.clipboard import get_image_from_clipboard, set_text_to_clipboard, get_text_from_clipboard
-from utils.message import message
+from utils.message import notify
 
 def get_bookxnote_backlink_local_file(config):
     link: str = get_text_from_clipboard(press_hotkey_in_app, config, 'Bookxnote', 'hotkey-link')
@@ -43,4 +43,4 @@ if __name__ == "__main__":
         get_bookxnote_backlink_local_file(config)
     except Exception as e:
         print(e)
-        message(e)
+        notify(e)

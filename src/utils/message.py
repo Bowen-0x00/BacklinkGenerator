@@ -1,7 +1,10 @@
 from plyer import notification
-def message(e):
+def notify(title, message, timeout=2):
     try:
-        notification.notify(title="Error", message=str(e), timeout=5)
+        notification.notify(title=title, message=str(message), timeout=timeout)
     except NotImplementedError:
         with open('error.log', 'w') as f:
-            f.write(str(e))
+            f.write(str(message))
+
+
+            

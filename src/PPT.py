@@ -6,7 +6,7 @@ from utils.image import image_to_base64
 import win32com.client
 from urllib.parse import urlencode
 from utils.clipboard import get_image_from_clipboard, set_text_to_clipboard
-from utils.message import message
+from utils.message import notify
 
 def get_PPT_backlink(config):
     image = get_image_from_clipboard(press_hotkey_in_app, config, 'PPT', 'hotkey-copy')
@@ -19,6 +19,8 @@ def get_PPT_backlink(config):
     json_str = json.dumps({'link': link,'img': image_base64})
     set_text_to_clipboard(f'ymjr:image-link{json_str}')
 
+    notify('Success', 'PPT elements copied to clipboard successfully!')
+
 
 if __name__ == "__main__":
     try:
@@ -28,4 +30,4 @@ if __name__ == "__main__":
         get_PPT_backlink(config)
     except Exception as e:
         print(e)
-        message(e)
+        notify(e)

@@ -7,7 +7,8 @@ from utils.regex import get_regex_group
 import regex
 from utils.clipboard import set_text_to_clipboard, get_text_from_clipboard
 from PIL import Image
-from utils.message import message
+from utils.message import notify
+
 
 def get_zotero_backlink(config):
     content = get_text_from_clipboard(press_hotkey_in_app, config, 'Zotero', 'hotkey-copy')
@@ -28,7 +29,12 @@ def get_zotero_backlink(config):
         image_base64 = image_to_base64(image)
         json_str = json.dumps({'link': link,'img': image_base64})
         set_text_to_clipboard(f'ymjr:image-link{json_str}')
-        
+
+    if text:
+        notify('Success', 'Text copied to clipboard successfully!')
+    else:
+        notify('Success', 'Image copied to clipboard successfully!')
+
 if __name__ == "__main__":
     try:
         config_path: str = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'config.conf'))
@@ -37,4 +43,4 @@ if __name__ == "__main__":
         get_zotero_backlink(config)
     except Exception as e:
         print(e)
-        message(e)
+        notify(e)

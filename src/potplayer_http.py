@@ -2,7 +2,7 @@ import os
 import configparser
 from potplayer import get_potplayer_backlink_obj
 import requests
-from utils.message import message
+from utils.message import notify
 
 def get_potplayer_backlink_http(config):
     obj = get_potplayer_backlink_obj(config)
@@ -12,7 +12,7 @@ def get_potplayer_backlink_http(config):
     # }
     response = requests.post(url, json=obj)
     if response.status_code == 200:
-        ...
+        notify('Success', 'Image copied to clipboard successfully!')
     else:
         raise requests.exceptions.HTTPError(f'requst fail! code: {response.status_code}')
 
@@ -24,4 +24,4 @@ if __name__ == "__main__":
         get_potplayer_backlink_http(config)
     except Exception as e:
         print(e)
-        message(e)
+        notify(e)
