@@ -13,6 +13,7 @@ from PPT import PPT
 from zotero import Zotero
 from zotero_local_file import Zotero_file
 from eagle import Eagle
+import time
 
 def get_application(config, app_name, method='paste') -> Application:
     app_classes = {
@@ -57,7 +58,7 @@ def parse_arguments():
     parser.add_argument('--method', type=str, default='paste', help='The method to use')
     parser.add_argument('--target', type=str, default='ob', help='The target structure to construct')
     parser.add_argument('--extra', type=str, help='Any extra information needed')
-    
+
     return parser.parse_args()
 
 if __name__ == "__main__":
@@ -79,7 +80,7 @@ if __name__ == "__main__":
                     break
 
         app: Application = get_application(config, app_name, method)
-        constructed_target = app.construct_target(target)
+        constructed_target = app.construct_target(target, args.extra)
     except Exception as e:
         print(e)
         notify('FAIL', e)

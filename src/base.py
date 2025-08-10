@@ -11,6 +11,7 @@ import base64
 from PIL import Image
 import io
 from datetime import datetime
+from anki import Anki
 
 def notify_on_empty_data(func):
     @wraps(func)
@@ -72,7 +73,7 @@ class Application:
             'link': link
         }
 
-    def construct_target(self, target):
+    def construct_target(self, target, extra=None):
         self.get_data()
         if target == 'ob':
             if self.data and self.data['type']:
@@ -119,4 +120,15 @@ class Application:
                 print(result)
             except requests.exceptions.RequestException as error:
                 print('error', error)
+        if extra == 'Anki':
+            anki = Anki(self.config)
+            if self.text and self.link:
             
+                anki_data = {
+                    'Sentence': self.text,
+                    'Link': self.origin_link
+                }
+                anki.send_to_anki(anki_data)
+            else:
+                notify("Anki发送失败", "未能同时获取到文本和链接。")
+            return
