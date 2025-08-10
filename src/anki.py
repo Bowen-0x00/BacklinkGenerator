@@ -26,7 +26,8 @@ class Anki:
         """
         try:
             print("正在连接Anki并查找最新笔记...")
-            all_note_ids = self.invoke_anki("findNotes", query="")
+            query = f"deck:{self.config.get('Anki', 'deck')}"
+            all_note_ids = self.invoke_anki("findNotes", query=query)
             if not all_note_ids:
                 raise Exception("Anki中没有任何笔记。")
 
