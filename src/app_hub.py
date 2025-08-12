@@ -80,7 +80,7 @@ if __name__ == "__main__":
                     break
 
         app: Application = get_application(config, app_name, method)
-        constructed_target = app.construct_target(target, args.extra)
+        constructed_target = app.construct_target(target, args)
     except Exception as e:
         print(e)
         notify('FAIL', e)

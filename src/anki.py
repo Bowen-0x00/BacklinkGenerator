@@ -1,63 +1,100 @@
-from utils.message import notify
-import urllib.request
+# file: your_anki_file.py (replace your original code with this)
+
 import json
+import urllib.request
+from typing import Any, Dict, Optional
 
-class Anki:
-    def __init__(self, config):
-        self.config = config
+# from base import Application
+from utils.message import notify
+from ai_helper import AIHelper, AIConfig
 
-    def invoke_anki(self, action, **params):
-        """调用 Anki-Connect API 的通用函数"""
-        request_data = json.dumps({"action": action, "params": params, "version": 6}).encode("utf-8")
-        request = urllib.request.Request(self.config.get('Anki', 'url'), data=request_data, headers={'Content-Type': 'application/json'})
-        with urllib.request.urlopen(request) as response:
-            response_body = response.read()
-            response_dict = json.loads(response_body.decode("utf-8"))
-            if response_dict.get("error") is not None:
-                raise Exception(f"Anki API Error: {response_dict['error']}")
-            return response_dict.get("result")
-            
-    def send_to_anki(self, fields_to_update: dict):
+class AnkiNoteUpdater:
+    """
+    Manages updating Anki notes, with optional AI-powered field population.
+    This class handles all Anki-Connect communication and orchestration logic.
+    """
+    
+    def __init__(self, config, app, args, ai_explainer: Optional[AIHelper] = None):
         """
-        查找最新的Anki笔记并更新指定的字段。
+        Initializes the updater.
 
         Args:
-            fields_to_update (dict): 一个包含字段名和新值的字典, 例如: {'Sentence': 'some text', 'url': 'http://...'}.
+            config: The main application configuration object (e.g., from configparser).
+            ai_explainer: An optional instance of AIHelper. If provided, AI features are enabled.
+        """
+        self.config = config
+        self.app = app
+        self.args = args
+        if not ai_explainer:
+            if config.getboolean('Anki', 'enable-AI-explanation', fallback=False) or self.args.extra == 'AI':
+                ai_conf = AIConfig(
+                    host=config.get('Anki', 'AI-host'),
+                    api_key=config.get('Anki', 'AI-key'),
+                    model=config.get('Anki', 'AI-model') 
+                )
+                ai_explainer = AIHelper(ai_conf)
+        self.ai_explainer = ai_explainer # Dependency Injection
+        self.anki_url = self.config.get('Anki', 'url')
+        self.deck_name = self.config.get('Anki', 'deck')
+
+    def _invoke_anki_connect(self, action: str, **params: Any) -> Dict[str, Any]:
+        """A private helper to make generic calls to the Anki-Connect API."""
+        payload = json.dumps({"action": action, "params": params, "version": 6}).encode("utf-8")
+        request = urllib.request.Request(self.anki_url, data=payload, headers={'Content-Type': 'application/json'})
+        
+        with urllib.request.urlopen(request) as response:
+            response_body = response.read().decode("utf-8")
+            response_dict = json.loads(response_body)
+            if response_dict.get("error") is not None:
+                raise ConnectionError(f"Anki API Error: {response_dict['error']}")
+            return response_dict.get("result")
+
+    def process_app_request(self):
+        """
+        The main entry point to process an app request and update the latest Anki note.
+        This orchestrates the entire workflow.
         """
         try:
-            print("正在连接Anki并查找最新笔记...")
-            query = f"deck:{self.config.get('Anki', 'deck')}"
-            all_note_ids = self.invoke_anki("findNotes", query=query)
-            if not all_note_ids:
-                raise Exception("Anki中没有任何笔记。")
+            print("Starting Anki note update process...")
+            
+            # 1. Find the latest note
+            note_ids = self._invoke_anki_connect("findNotes", query=f"deck:{self.deck_name}")
+            if not note_ids:
+                raise ValueError(f"No notes found in deck '{self.deck_name}'.")
+            latest_note_id = max(note_ids)
+            print(f"Found latest note with ID: {latest_note_id}")
 
-            latest_note_id = max(all_note_ids)
-            print(f"找到最新笔记ID: {latest_note_id}")
+            # 2. Get existing note data
+            note_info = self._invoke_anki_connect("notesInfo", notes=[latest_note_id])[0]
+            current_fields = {name: data['value'] for name, data in note_info['fields'].items()}
+            
+            # 3. Prepare new data and merge it
+            fields_from_app = {'Text': self.app.text, 'Link': self.app.origin_link}
+            current_fields.update(fields_from_app)
 
-            # 获取笔记现有所有字段的值，以防覆盖
-            note_info = self.invoke_anki("notesInfo", notes=[latest_note_id])[0]
-            current_fields = {
-                field_name: field_data['value'] 
-                for field_name, field_data in note_info['fields'].items()
-            }
+            # 4. (Optional) Get AI explanation
+            updated_field_keys = list(fields_from_app.keys())
+            if self.ai_explainer:
+                word = note_info['fields'].get('Front', {}).get('value')
+                sentence = current_fields.get('Text')
+                
+                if word and sentence:
+                    ai_insight = self.ai_explainer.get_explanation(sentence=sentence, word=word)
+                    if ai_insight:
+                        # Add explanation to the 'aiInsight' field.
+                        # IMPORTANT: Ensure your Anki note type has a field named 'aiInsight'.
+                        current_fields['AI-Insight'] = ai_insight
+                        updated_field_keys.append('AI-Insight')
+                else:
+                    print("Warning: Missing 'Front' or 'Text' field. Cannot generate AI explanation.")
+
+            # 5. Update the note in Anki
+            payload = {"note": {"id": latest_note_id, "fields": current_fields}}
+            self._invoke_anki_connect("updateNoteFields", **payload)
             
-            # 使用新数据更新字段
-            current_fields.update(fields_to_update)
-            
-            payload = {
-                "note": {
-                    "id": latest_note_id,
-                    "fields": current_fields
-                }
-            }
-            
-            self.invoke_anki("updateNoteFields", **payload)
-            
-            # 验证并通知
-            print(f"成功为笔记 {latest_note_id} 更新字段: {list(fields_to_update.keys())}")
-            notify("Anki 更新成功", f"已为最新笔记更新字段。")
+            print(f"Successfully updated note {latest_note_id} with fields: {updated_field_keys}")
+            notify("Anki Update Successful", f"Updated fields for the latest note.")
 
         except Exception as e:
-            print(f"Anki更新过程中发生错误: {e}")
-            notify("Anki 更新失败", f"错误: {e}")
-
+            print(f"An error occurred during the note update process: {e}")
+            notify("Anki Update Failed", f"Error: {e}")
