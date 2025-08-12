@@ -1,45 +1,84 @@
-# Quicker Actions
+# BacklinkGenerator - One-Click Capture, Pinpoint Recall
 
-[English](./README.md) | [简体中文](docs/README_ZH.md)
+[English](./README.md) | [简体中文](./README_ZH.md)
 
-This repository is designed to extract information and generate backlinks. Together with two other repositories (which convert extracted information into images and text in Obsidian and Excalidraw, and provide corresponding backlinks), it enables one-click extraction of video, PDF, and PPT content into note-taking software with attached backlinks. When clicking on the link, it can jump back to the original source.
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Bowen-0x00/BacklinkGenerator)](https://github.com/Bowen-0x00/BacklinkGenerator/releases)
 
-Examples of generated backlinks include video frames with corresponding timestamps, PPT slides with corresponding page numbers, and PDF pages with corresponding positions.
+Ever wished you could effortlessly capture key information while watching videos, reading PDFs, or viewing presentations, and have it instantly saved to your knowledge base like Obsidian、Eagle or Anki? Even better, what if you could click a link in your notes and jump right back to the exact source—be it a specific timestamp in a video or the corresponding page in a PDF?
 
-Supported software includes PotPlayer, Bookxnote, Zotero, and PowerPoint.
+**BacklinkGenerator** is the core engine that makes this workflow possible. It specializes in capturing information and generating precise backlinks to the original content.
 
-## Usage
+## ✨ Core Features
 
-[![摘录视频、PDF、PPT到Obsidian和Excalidraw的配置教程 -- 一键摘录内容，点击回链跳回原文](https://i1.hdslb.com/bfs/archive/ffd87eb63fd6655d5359b29ead642d19343b6585.jpg)](https://www.bilibili.com/video/BV1qH4y1j7Q6/)
+This tool is a key component in an automated knowledge-capturing workflow. When combined with productivity tools (like Quicker) and knowledge base plugins, it enables:
 
-And
+-   **One-Click Capture**: Quickly grab video frames, screenshots of PDF/PPT pages, or selected text.
+-   **Intelligent Processing**: Automatically send the captured content and its metadata (like video timestamps or PDF page numbers) to your target application.
+-   **Precise Backlinking**: Embed a clickable link in the generated note or card, allowing you to revisit the original context anytime.
+-   **Broad Compatibility**: Supports capturing from various applications, including PotPlayer, BookxNote, Zotero, and PowerPoint.
+-   **Multi-Platform Sync**: Seamlessly send content to your favorite note-taking and asset management tools like Obsidian, Obsidian-Excalidraw, Anki, and Eagle.
 
-1. Download [Example vault](https://github.com/Bowen-0x00/obsidian-excalidraw-example-vault)
-2. Open it by obsidian
-3. Follow `摘录方式.excalidraw.md`
+## 🚀 Getting Started
 
-## Feedback, questions, ideas, problems
+### 1. Quick Start
 
-Feel free to contact me if:
+The easiest way to begin is by using the pre-packaged executable.
 
-- You have any issues or questions regarding usage.
-- You have suggestions or feedback.
-- You want to discuss interesting ideas or new features.
+1.  Go to the [Releases page](https://github.com/Bowen-0x00/BacklinkGenerator/releases) and download the latest version of `app_hub.exe`.
+2.  Use a launcher like Listary, Quicker, or your preferred tool to bind a global hotkey to `app_hub.exe`.
+3.  When you want to capture something, simply press the hotkey with the required arguments.
 
-Communication channels can be:
+**Common Command Examples:**
 
-- GitHub issues.
-- Email.
-- Bilibili comments or private messages.
-- My personal contact information (WeChat, QQ).
+-   **Capture a sentence to Anki** (with a backlink):
+    ```bash
+    app_hub.exe --target=anki
+    ```
+-   **Capture a screenshot to Eagle** (with a backlink):
+    ```bash
+    app_hub.exe --target=eagle
+    ```
 
-## Say Thank You
+### 2. Watch the Video Tutorial
 
-If you find the modifications I made helpful to you, feel free to leave comments and messages.
+To help you visually understand the setup and usage, a detailed video tutorial is available (in Chinese).
 
-You can also sponsor me a cup of coffee:
+[![Configuration tutorial for capturing from Videos, PDFs, and PPTs to Obsidian and Excalidraw](https://i1.hdslb.com/bfs/archive/ffd87eb63fd6655d5359b29ead642d19343b6585.jpg)](https://www.bilibili.com/video/BV1qH4y1j7Q6/)
 
-- WeChat sponsorship code.
-<img src="images/赞助码.jpg" width="200px">
-- ko-fi
-  <a href='https://ko-fi.com/G2G3SY16R' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+### 3. Explore the Demo Vault
+
+You can download our [Obsidian Example Vault](https://github.com/Bowen-0x00/obsidian-excalidraw-example-vault) to experience the full workflow firsthand.
+
+1.  Download and unzip the [Example Vault](https://github.com/Bowen-0x00/obsidian-excalidraw-example-vault).
+2.  Open the vault using Obsidian.
+3.  Check the `摘录方式.excalidraw.md` file for a visual demonstration of different capture methods.
+
+### Command-Line Arguments
+
+`app_hub.exe` serves as the central hub for all functions and automatically detects the currently active application.
+
+| Argument  | Description                                              | Default | Example                      |
+| :-------- | :------------------------------------------------------- | :------ | :--------------------------- |
+| `--app`   | **Source App**: Specify the app to capture from. Usually auto-detected. | `''`    | `--app=potplayer`            |
+| `--method`| **Capture Method**: How to get the content (e.g., clipboard, file). | `paste` | `--method=http`              |
+| `--target`| **Target App**: Where to send the captured content.      | `ob`    | `--target=anki`              |
+| `--extra` | **Extra Info**: Pass special commands or additional data. | `N/A`   | `--extra="AI anki explain"` |
+
+## 💬 Issues, Feedback, and Ideas
+
+If you encounter any problems, have suggestions for improvement, or want to discuss interesting ideas for new features, feel free to reach out:
+
+-   [GitHub Issues](https://github.com/Bowen-0x00/BacklinkGenerator/issues)
+-   Email me
+-   Leave a comment or send a direct message on Bilibili
+-   Contact me via my personal channels (WeChat, QQ)
+
+## ❤️ Support the Project
+
+If you find this project helpful, I'd love to hear about your experience in the comments or issues!
+
+You can also support my work by buying me a coffee, which will motivate me to continue maintaining and developing new features.
+
+| WeChat Pay | Buy Me a Coffee |
+| :--- | :--- |
+| <img src="./images/赞助码.jpg" width="200px"> | <a href='https://ko-fi.com/G2G3SY16R' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a> |
