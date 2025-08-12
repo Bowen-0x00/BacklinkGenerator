@@ -1,6 +1,6 @@
 # BacklinkGenerator - One-Click Capture, Pinpoint Recall
 
-[English](./README.md) | [简体中文](./README_ZH.md)
+[English](./README.md) | [简体中文](./docs/README_ZH.md)
 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Bowen-0x00/BacklinkGenerator)](https://github.com/Bowen-0x00/BacklinkGenerator/releases)
 
